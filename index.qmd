@@ -1,0 +1,14 @@
+---
+title: "Sleep Deprivation Among College Students"
+subtitle: "Why are college students sleep deprived and how can we predict"
+format:
+  revealjs:
+    theme: dark
+    slide-number: true
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+editor: visual
+---
+
+

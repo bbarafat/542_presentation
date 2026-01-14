@@ -1,0 +1,7 @@
+---
+title: "About"
+---
+
+This is a presentation designed and written by Bright Arafat Bello, powered by Quarto.
+
+It is in fulfillment of requirements for DSCI 542 course in MDS.

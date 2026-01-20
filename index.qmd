@@ -1,14 +1,88 @@
 ---
 title: "Sleep Deprivation Among College Students"
-subtitle: "Why are college students sleep deprived and how can we predict"
-format:
-  revealjs:
-    theme: dark
-    slide-number: true
-    chalkboard: 
-      buttons: false
-    preview-links: auto
-editor: visual
+subtitle: "Do evening habits significantly affect the quality of sleep of college students?"
 ---
 
+## The usual suspects 
+ 
+:::: {.columns}
 
+::: {.column width="50%"}
+![](images/sleep_opening page.webp){width=100%}
+:::
+
+::: {.column width="50%"}
+
+![](images/coffee.jpg){width=100%}
+:::
+
+::::
+
+## What did we find?
+
+![](images/screen_v_quality.png){width=100%}
+
+## OLS Regression for significance
+
+
+```{python}
+import pandas as pd
+import statsmodels.api as sm
+
+data = pd.read_csv("data/student_sleep_patterns.csv")
+
+# Select variables
+cols = [
+    "Screen_Time",
+    "Caffeine_Intake",
+    "Physical_Activity",
+    "Study_Hours",
+    "Sleep_Quality"
+]
+
+df_model = data[cols].dropna()
+
+# Response and predictors
+y = df_model["Sleep_Quality"]
+X = df_model.drop(columns="Sleep_Quality")
+
+# Add intercept
+X = sm.add_constant(X)
+
+# Fit OLS model
+model = sm.OLS(y, X).fit()
+
+# Summary
+coef_tbl = pd.DataFrame({
+    "term": model.params.index,
+    "coef": model.params.values,
+    "p_value": model.pvalues.values,
+    "ci_low": model.conf_int()[0].values,
+    "ci_high": model.conf_int()[1].values
+})
+
+coef_tbl = coef_tbl.sort_values("p_value")
+
+# add a significance flag
+coef_tbl["sig_0.05"] = coef_tbl["p_value"] < 0.05
+
+# round for readability
+coef_tbl = coef_tbl.round({"coef": 3, "p_value": 3, "ci_low": 3, "ci_high": 3})
+
+def highlight_pvals(row):
+    return ['background-color: #ffe6e6' if (col == "p_value" and row["p_value"] < 0.05) else '' 
+            for col in row.index]
+
+coef_tbl.style.apply(highlight_pvals, axis=1)
+```
+ 
+ 
+## Final Thoughts
+
+### Myth vs Reality
+- **Myth:** “More screen time = always less sleep.”
+- **Reality:** In our data, screen time didn’t strongly predict **sleep quality**.
+- **Better claim:** Screen time may shift **when** and **how well** students sleep depending on how long it is.
+
+---
+![](images/finished-spongebob-squarepantes.gif){width=100%}
